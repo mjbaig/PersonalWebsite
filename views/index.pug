@@ -1,0 +1,60 @@
+extends layout
+
+block content
+
+  script(src="/javascript/animation-test.js")
+  script(src="/javascript/jquery-3.2.1.js")
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.5.0/bluebird.js')
+  script(src='https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.js')
+
+  body
+    h5#p= name
+    h1#potato #{title}
+    div#display
+    script.
+      $(document).ready(function () {
+              TweenLite.to($('#potato'), 2, {
+                  x: 150
+              });
+              TweenLite.to($('#p'), 1, {
+                  x: 100
+              })
+          });
+      var renderer = PIXI.autoDetectRenderer(512,512,{
+        transparent:true,
+        resolution:1
+      });
+      document.getElementById('display').appendChild(renderer.view);
+
+      var stage = new PIXI.Container();
+
+      PIXI.loader
+        .add("unza","/images/unza.png")
+        .load(setup);
+
+      var sprite;
+
+      var setup = function(){
+          stage.interactive = true;
+
+          var rect = new PIXI.Rectangle(0,0,200,200);
+          var texture = PIXI.loader.resources['unza'].texture;
+          texture.frame = rect;
+
+          sprite.scale.set(200,200);
+          sprite = new PIXI.Sprite(texture);
+
+          stage.addChild(sprite);
+
+          animationLoop();
+
+      }
+
+      var animationLoop = function(){
+          requestAnimationFrame(animationLoop);
+
+          renderer.render(stage);
+      }
+
+
